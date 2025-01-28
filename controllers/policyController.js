@@ -1,155 +1,139 @@
-const Claim = require('../models/claimModel');
+const Policy = require('../models/policyModel');
 
-exports.getClaims = async (req, res) => {
+exports.getPolicies = async (req, res) => {
     try {
-        const claims = await Claim.find();
-        if (!claims || claims.length === 0) 
-        {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'No claims found.' 
+        const policies = await Policy.find();
+
+        if (!policies || policies.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No policies found.'
             });
         }
 
-        return res.status(200).json({ 
-            success: true, 
-            claims 
+        return res.status(200).json({
+            success: true,
+            policies
         });
-    } 
-    catch (err) 
-    {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error fetching claims.", 
-            error: err.message 
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching policies.",
+            error: err.message
         });
     }
 };
 
-
-exports.getClaimById = async (req, res) => {
+exports.getPolicyById = async (req, res) => {
     const { id } = req.params;
-    try {
-        const claim = await Claim.findById(id);
 
-        if (!claim) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Claim not found." 
+    try {
+        const policy = await Policy.findById(id);
+
+        if (!policy) {
+            return res.status(404).json({
+                success: false,
+                message: "Policy not found."
             });
         }
-        return res.status(200).json({ 
-            success: true, 
-            claim 
-        });
-    }
 
-    catch (err) 
-    {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error fetching claim.", 
-            error: err.message 
+        return res.status(200).json({
+            success: true,
+            policy
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Error fetching policy.",
+            error: err.message
         });
     }
 };
 
-exports.createClaim = async (req, res) => {
-    const { policyholderId, amount, status } = req.body;
+exports.createPolicy = async (req, res) => {
+    const { name, description } = req.body;
 
     // Basic input validation
-    if (!policyholderId || !amount || !status) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Policyholder ID, amount, and status are required.' 
+    if (!name || !description) {
+        return res.status(400).json({
+            success: false,
+            message: 'Name and description are required.'
         });
     }
 
     try {
-        const newClaim = new Claim(req.body);
-        await newClaim.save();
+        const newPolicy = new Policy(req.body);
+        await newPolicy.save();
 
-        res.status(201).json({ 
-            success: true, 
-            message: "Claim created successfully.", 
-            data: newClaim 
+        return res.status(201).json({
+            success: true,
+            message: "Policy created successfully.",
+            data: newPolicy
         });
-    } catch (err) 
-    {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error creating claim.", 
-            error: err.message 
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Error creating policy.",
+            error: err.message
         });
     }
 };
 
-
-exports.updateClaim = async (req, res) => {
-
-    const { policyholderId, amount, status } = req.body;
+exports.updatePolicy = async (req, res) => {
+    const { name, description } = req.body;
 
     // Basic input validation
-    if (!policyholderId || !amount || !status)
-    {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Policyholder ID, amount, and status are required.' 
+    if (!name || !description) {
+        return res.status(400).json({
+            success: false,
+            message: 'Name and description are required.'
         });
     }
 
     try {
-        const updatedClaim = await Claim.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedPolicy = await Policy.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-        if (!updatedClaim) 
-        {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Claim not found." 
+        if (!updatedPolicy) {
+            return res.status(404).json({
+                success: false,
+                message: "Policy not found."
             });
         }
-        return res.status(200).json({ 
-            success: true, 
-            message: "Claim updated successfully.", 
-            data: updatedClaim 
-        });
 
-    } 
-    catch (err) 
-    {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error updating claim.", 
-            error: err.message });
+        return res.status(200).json({
+            success: true,
+            message: "Policy updated successfully.",
+            data: updatedPolicy
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Error updating policy.",
+            error: err.message
+        });
     }
 };
 
-
-exports.deleteClaim = async (req, res) => {
+exports.deletePolicy = async (req, res) => {
     try {
-        const deletedClaim = await Claim.findByIdAndDelete(req.params.id);
+        const deletedPolicy = await Policy.findByIdAndDelete(req.params.id);
 
-        if (!deletedClaim) 
-            {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Claim not found." 
+        if (!deletedPolicy) {
+            return res.status(404).json({
+                success: false,
+                message: "Policy not found."
             });
         }
 
-        return res.json({ 
-            success: true, 
-            message: "Claim deleted successfully." 
+        return res.status(200).json({
+            success: true,
+            message: "Policy deleted successfully."
         });
-        
-    } 
-    catch (err) 
-    {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error deleting claim.", 
-            error: err.message 
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: "Error deleting policy.",
+            error: err.message
         });
     }
 };
-
