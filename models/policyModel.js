@@ -1,14 +1,34 @@
-// models/policyModel.js
+const mongoose = require("mongoose");
 
-const policies = [
-    {
-        id: "P001",
-        policyholderId: "PH001",
-        policyNumber: "POL123456",
-        coverageAmount: 10000,
-        startDate: "2023-01-01",
-        endDate: "2025-01-01",
+const PolicySchema = new mongoose.Schema({
+
+    id: { 
+        type: String, 
+        required: true, 
+        unique: true 
     },
-];
+    policyholderId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Policyholder",
+        required: true 
+    },
+    policyNumber: { 
+        type: String, 
+        required: true, 
+        unique: true 
+    },
+    coverageAmount: { 
+        type: Number, 
+        required: true 
+    },
+    startDate: { 
+        type: Date, 
+        required: true 
+    },
+    endDate: { 
+        type: Date, 
+        required: true 
+    },
+});
 
-module.exports = policies;
+module.exports = mongoose.model("Policy", PolicySchema);
