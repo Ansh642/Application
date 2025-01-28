@@ -1,11 +1,28 @@
+const mongoose = require("mongoose");
 
-const policyholders = [
-    {
-    id: "PH001", 
-    name: "John Doe", 
-    email: "john.doe@example.com", 
-    phone: "1234567890" 
-},
-];
+const PolicyholderSchema = new mongoose.Schema({
+    id: { 
+    type: String, 
+    required: true, 
+    unique: true 
+    },
 
-module.exports = policyholders;
+    name: { 
+    type: String, 
+    required: true 
+    },
+
+    email: { 
+    type: String, 
+    required: true, 
+    unique: true 
+    },
+    
+    phone: {
+     type: String, 
+     required: true, 
+     unique: true 
+    },
+},{timestamps:true});
+
+module.exports = mongoose.model("Policyholder", PolicyholderSchema);

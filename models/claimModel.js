@@ -1,13 +1,29 @@
-// models/claimModel.js
+const mongoose = require("mongoose");
 
-const claims = [
-    {
-        id: "C001",
-        policyId: "P001",
-        claimAmount: 5000,
-        claimDate: "2024-01-01",
-        status: "Pending",
+const ClaimSchema = new mongoose.Schema({
+    id: { 
+        type: String, 
+        required: true, 
+        unique: true 
     },
-];
+    policyId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Policy", 
+        required: true 
+    },
+    claimAmount: { 
+        type: Number, 
+        required: true 
+    },
+    claimDate: { 
+        type: Date, 
+        required: true 
+    },
+    status: { 
+        type: String, 
+        required: true, 
+        enum: ["Pending", "Approved", "Rejected"] 
+    },
+});
 
-module.exports = claims;
+module.exports = mongoose.model("Claim", ClaimSchema);
