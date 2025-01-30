@@ -7,10 +7,10 @@ export default function Contact() {
     <div>
       <Navbar/>
 
-      <section className="py-16 bg-blue-50">
+      <section className="py-16 bg-blue-900">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">Let's Connect</h1>
-          <p className="text-lg text-gray-500 mb-8">We would love to hear from you! Whether you have a project idea, a question, or just want to talk, feel free to reach out.</p>
+          <h1 className="text-4xl font-bold text-white mb-4">Let's Connect</h1>
+          <p className="text-lg text-white mb-8">We would love to hear from you! Whether you have a project idea, a question, or just want to talk, feel free to reach out.</p>
         </div>
       </section>
 

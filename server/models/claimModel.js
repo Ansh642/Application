@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
 const ClaimSchema = new mongoose.Schema({
-    id: { 
-        type: String, 
-        required: true, 
-        unique: true 
-    },
+
+    policyholderId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Policyholder", 
+        required: true 
+    }, 
     policyId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Policy", 
@@ -17,13 +18,17 @@ const ClaimSchema = new mongoose.Schema({
     },
     claimDate: { 
         type: Date, 
-        required: true 
-    },
+        required: true, 
+        default: Date.now 
+    }, 
     status: { 
         type: String, 
         required: true, 
-        enum: ["Pending", "Approved", "Rejected"] 
-    },
-});
+        enum: ["Pending", "Approved", "Rejected"], 
+        default: "Pending" 
+    }
+}, { timestamps: true });
+
 
 module.exports = mongoose.model("Claim", ClaimSchema);
+

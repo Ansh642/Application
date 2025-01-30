@@ -84,22 +84,6 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Contact Us Section */}
-      {/* <section className="py-16 px-4 bg-gray-100 text-gray-900">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl font-semibold text-blue-900">Let’s Get in Touch!</h2>
-          <p className="mt-4 text-lg">We’d love to hear from you! Whether you have questions about our services or want to explore potential partnerships, feel free to reach out to us.</p>
-          <form className="mt-8 max-w-lg mx-auto space-y-4">
-            <input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your Name" />
-            <input type="email" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your Email" />
-            <textarea className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your Message" rows="4"></textarea>
-            <button type="submit" className="w-full py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              Send Message
-            </button>
-          </form>
-        </div>
-      </section> */}
-
       <Footer/>
     </div>
   );

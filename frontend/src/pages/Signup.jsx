@@ -1,132 +1,152 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
+import React, { useState } from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+// import toast from 'react-hot-toast';
 
 export default function Signup() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const { name, email, password, confirmPassword } = formData;
+
+  const handleOnChange = (e) => {
+    e.preventDefault();
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const submitHandler = async (e) => {
+    // e.preventDefault();
+    // try {
+    //   const response = await axios.post('http://localhost:4000/api/v1/signup', {
+    //     name,
+    //     email,
+    //     password,
+    //     confirmPassword,
+    //   });
+
+    //   if (response.data.success) {
+    //     toast.success('Registration Successful!');
+    //     navigate('/login');
+    //   }
+    // } catch (err) {
+    //   toast.error(err.message);
+    // }
+  };
+
   return (
-      <div>    
-        <Navbar/>
-    <section className="bg-white">
-    <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
-        <aside className="relative block h-16 lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
-        <img
-            alt=""
-            src="https://images.unsplash.com/photo-1605106702734-205df224ecce?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
-            className="absolute inset-0 h-full w-full object-cover"
-        />
-        </aside>
+    <div className="min-h-screen flex flex-col justify-between bg-gray-50">
+      <Navbar />
 
-        <main
-        className="flex items-center justify-center px-8 py-8 sm:px-12 lg:col-span-7 lg:px-16 lg:py-12 xl:col-span-6"
-        >
-        <div className="max-w-xl lg:max-w-3xl">
-            <a className="block text-blue-600" href="#">
-            <span className="sr-only">Home</span>
-            </a>
-
-            <h1 className="mt-6 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl">
-            Welcome to LumiClaim 🦑
-            </h1>
-
-            <p className="mt-4 leading-relaxed text-gray-500">
-            LumiClaim – A seamless, secure, and efficient platform for managing insurance policies and claims with ease. 
+      <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-md space-y-8">
+          <div>
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+              Create a new account
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              Or{' '}
+              <Link
+                to="/login"
+                className="font-medium text-blue-600 hover:text-blue-500"
+              >
+                sign in to your account
+              </Link>
             </p>
-
-            <form action="#" className="mt-8 grid grid-cols-6 gap-6">
-            <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="FirstName" className="block text-sm font-medium text-gray-700">
-                 First Name
+          </div>
+          <form
+            onSubmit={submitHandler}
+            className="mt-8 space-y-6 bg-white p-8 rounded-lg shadow-lg"
+          >
+            <div className="rounded-md shadow-sm space-y-4">
+              <div>
+                <label htmlFor="name" className="sr-only">
+                  Full Name
                 </label>
-
                 <input
-                type="text"
-                id="FirstName"
-                name="first_name"
-                className="mt-1 px-1 py-2 border-[1px] border-gray-700   w-full rounded-md bg-white text-sm text-gray-700 shadow-sm"
+                  id="name"
+                  name="name"
+                  type="text"
+                  required
+                  onChange={handleOnChange}
+                  value={name}
+                  className="appearance-none rounded-t-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Full Name"
                 />
-            </div>
-
-            <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="LastName" className="block text-sm font-medium text-gray-700">
-                Last Name
+              </div>
+              <div>
+                <label htmlFor="email" className="sr-only">
+                  Email address
                 </label>
-
                 <input
-                type="text"
-                id="LastName"
-                name="last_name"
-                className="mt-1 w-full px-1 py-2 border-[1px] border-gray-700 rounded-md bg-white text-sm text-gray-700 shadow-sm"
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  onChange={handleOnChange}
+                  value={email}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Email address"
                 />
-            </div>
-
-            <div className="col-span-6">
-                <label htmlFor="Email" className="block text-sm font-medium text-gray-700"> Email </label>
-
-                <input
-                type="email"
-                id="Email"
-                name="email"
-                className="mt-1 w-full rounded-md px-1 py-2 border-[1px] border-gray-700 bg-white text-sm text-gray-700 shadow-sm"
-                />
-            </div>
-
-            <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="Password" className="block text-sm font-medium text-gray-700"> Password </label>
-
-                <input
-                type="password"
-                id="Password"
-                name="password"
-                className="mt-1 w-full rounded-md px-1 py-2 border-[1px] border-gray-700 bg-white text-sm text-gray-700 shadow-sm"
-                />
-            </div>
-
-            <div className="col-span-6 sm:col-span-3">
-                <label htmlFor="PasswordConfirmation" className="block text-sm font-medium text-gray-700">
-                Password Confirmation
+              </div>
+              <div>
+                <label htmlFor="password" className="sr-only">
+                  Password
                 </label>
-
                 <input
-                type="password"
-                id="PasswordConfirmation"
-                name="password_confirmation"
-                className="mt-1 w-full rounded-md px-1 py-2 border-[1px] border-gray-700 bg-white text-sm text-gray-700 shadow-sm"
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  onChange={handleOnChange}
+                  value={password}
+                  className="appearance-none block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Password"
                 />
-            </div>
-
-            <div className="col-span-6">
-                <label htmlFor="MarketingAccept" className="flex gap-4">
-                <input
-                    type="checkbox"
-                    id="MarketingAccept"
-                    name="marketing_accept"
-                    className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
-                />
-
-                <span className="text-sm text-gray-700">
-                By creating an account, you agree to our  terms and conditions
-                </span>
+              </div>
+              <div>
+                <label htmlFor="confirmPassword" className="sr-only">
+                  Confirm Password
                 </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  onChange={handleOnChange}
+                  value={confirmPassword}
+                  className="appearance-none rounded-b-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  placeholder="Confirm Password"
+                />
+              </div>
             </div>
 
-            
-
-            <div className="col-span-6 sm:flex sm:items-center sm:gap-4">
-                <button
-                className="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-transparent hover:text-blue-600 focus:outline-none focus:ring active:text-blue-500"
-                >
-                Create an account
-                </button>
-
-                <p className="mt-4 text-sm text-gray-500 sm:mt-0">
-                Already have an account?
-                <a href="#" className="text-gray-700 underline ml-1">Log in</a>.
-                </p>
+            <div className="flex items-center justify-between mt-6">
+              <button
+                type="submit"
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Sign Up
+              </button>
             </div>
-            </form>
+          </form>
         </div>
-        </main>
+      </div>
+
+      <Footer />
     </div>
-    </section>
-    </div>
-  )
+  );
 }

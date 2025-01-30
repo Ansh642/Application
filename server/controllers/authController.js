@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const JWT = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 // Login controller
 exports.signup = async(req,res)=>{

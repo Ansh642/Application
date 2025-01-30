@@ -1,8 +1,12 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
+
+  const navigate = useNavigate();
+
   return (
     <div>
   <div className="bg-white text-black text-[15px]">
@@ -10,6 +14,7 @@ export default function Home() {
     <Navbar/>
 
     <div className="px-4 sm:px-10">
+
       <div className="min-h-[500px]">
         <div className="grid md:grid-cols-2 justify-center items-center gap-10">
           <div className="max-md:order-1">
@@ -18,20 +23,31 @@ export default function Home() {
               POLICY PLANNER</p>
             <h1 className="md:text-5xl text-4xl font-bold mb-4 md:!leading-[55px]">Manage policies and claims effortlessly</h1>
             <p className="mt-4 text-base leading-relaxed">With secure authentication, a user-friendly dashboard, and automated workflows, LumiClaim enhances the claims experience while ensuring transparency and efficiency in the insurance process. 🚀</p>
-            <div className="bg-white mt-10 flex px-1 py-1.5 rounded-full shadow-[0_2px_10px_-3px_rgba(6,81,237,0.3)] overflow-hidden">
-              <input type="email" placeholder="Search Something..." className="w-full outline-none bg-white pl-4" />
-              <button type="button" className="bg-blue-600 hover:bg-blue-700 transition-all text-white rounded-full px-5 py-2.5">Search</button>
+           
+            <div className="mt-10 flex w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+            <div className="mt-10 flex w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+  
+              <button
+                type="button" onClick={()=>navigate('/policies')}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold text-lg py-3 rounded-full shadow-lg transition-all duration-300 transform hover:bg-blue-900 flex items-center justify-center gap-2">
+                Explore All Policies
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 5l7 7m0 0l-7 7m7-7H4"
+                  />
+                </svg>
+              </button>
             </div>
-            <div className="flex items-center mt-10">
-              <input id="checkbox3" type="checkbox" className="hidden peer" defaultChecked />
-              
-              
-            </div>
-            <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
-              <img src="https://readymadeui.com/google-logo.svg" className="w-28 mx-auto" alt="google-logo" />
-              <img src="https://readymadeui.com/facebook-logo.svg" className="w-28 mx-auto" alt="facebook-logo" />
-              <img src="https://readymadeui.com/linkedin-logo.svg" className="w-28 mx-auto" alt="linkedin-logo" />
-              <img src="https://readymadeui.com/pinterest-logo.svg" className="w-28 mx-auto" alt="pinterest-logo" />
+
             </div>
           </div>
           <div className="max-md:mt-12 h-full">
@@ -39,7 +55,8 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="mt-28 bg-gray-50 px-4 sm:px-10 py-12">
+
+      <div className="mt-10 bg-gray-50 px-4 sm:px-10 py-12">
         <div className="max-w-7xl mx-auto">
           <div className="md:text-center max-w-2xl mx-auto">
             <h2 className="md:text-4xl text-3xl font-bold mb-6">Discover Our Exclusive Features</h2>
@@ -126,7 +143,7 @@ export default function Home() {
       </div>
       
 
-      <div className="mt-28 bg-gray-50 px-4 sm:px-10 py-12">
+      <div className="mt-10 bg-gray-50 px-4 sm:px-10 py-12">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 items-center gap-8">
             <div className="space-y-6 bg-gray-100 rounded-md p-6 max-w-md max-md:order-1">
@@ -198,7 +215,7 @@ export default function Home() {
     
     
 
-<div className='mt-16'>
+    <div className='mt-20'>
     <Footer/>
     </div>
 

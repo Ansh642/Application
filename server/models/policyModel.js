@@ -2,14 +2,9 @@ const mongoose = require("mongoose");
 
 const PolicySchema = new mongoose.Schema({
 
-    id: { 
-        type: String, 
-        required: true, 
-        unique: true 
-    },
     policyholderId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "Policyholder",
+        ref: "Policyholder", 
         required: true 
     },
     policyNumber: { 
@@ -29,6 +24,7 @@ const PolicySchema = new mongoose.Schema({
         type: Date, 
         required: true 
     },
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Policy", PolicySchema);
+
