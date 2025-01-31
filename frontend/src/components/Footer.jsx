@@ -3,7 +3,7 @@ import React from 'react';
 export default function Footer() {
   return (
     <div>
-      <footer className="bg-blue-500 mt-6 py-16">
+      <footer className="bg-blue-600 mt-6 py-16">
         <div className="mx-auto max-w-screen-xl px-6 sm:px-8 lg:px-12">
           <div className="sm:flex sm:items-center sm:justify-between">
             {/* Logo section */}
@@ -36,7 +36,7 @@ export default function Footer() {
 
             {/* Copyright */}
             <div className="mt-8 sm:mt-0 text-center text-white text-sm">
-              <p className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-transparent">
+              <p className="bg-gradient-to-r from-white via-gray-100 to-white bg-clip-text text-lg">
                 Copyright © 2025. All rights reserved.
               </p>
             </div>

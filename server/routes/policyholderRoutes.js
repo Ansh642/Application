@@ -7,16 +7,16 @@ const claimController = require('../controllers/claimController');
 const authController = require('../controllers/authController');
 
 // Policyholder routes
-router.get('/policyholders', policyholderController.getPolicyholders);
-router.get('/policyholders/:id', policyholderController.getPolicyholderById);
-router.post('/policyholders', policyholderController.createPolicyholder);
-router.put('/policyholders/:id', policyholderController.updatePolicyholder);
-router.delete('/policyholders/:id', policyholderController.deletePolicyholder);
+// router.get('/get-policy', policyholderController.getPolicyholders);
+// router.get('/get-policy/:id', policyholderController.getPolicyholderById);
+// router.post('/create-policy', policyholderController.createPolicyholder);
+// router.put('/update-policy/:id', policyholderController.updatePolicyholder);
+// router.delete('/delete-policy/:id', policyholderController.deletePolicyholder);
 
 // Policy routes
-router.get('/policies', policyController.getPolicies);
+router.get('/get-policies', policyController.getPolicies);
 router.get('/policies/:id', policyController.getPolicyById);
-router.post('/policies', policyController.createPolicy);
+router.post('/create-policy', policyController.createPolicy);
 router.put('/policies/:id', policyController.updatePolicy);
 router.delete('/policies/:id', policyController.deletePolicy);
 

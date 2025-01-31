@@ -4,7 +4,7 @@ const ClaimSchema = new mongoose.Schema({
 
     policyholderId: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: "Policyholder", 
+        ref: "User", 
         required: true 
     }, 
     policyId: { 

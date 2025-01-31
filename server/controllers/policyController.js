@@ -1,7 +1,9 @@
 const Policy = require('../models/policyModel');
 
+
 exports.getPolicies = async (req, res) => {
     try {
+        
         const policies = await Policy.find();
 
         if (!policies || policies.length === 0) {
@@ -13,7 +15,7 @@ exports.getPolicies = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            policies
+            data:policies
         });
     } catch (err) {
         return res.status(500).json({
@@ -51,24 +53,41 @@ exports.getPolicyById = async (req, res) => {
 };
 
 exports.createPolicy = async (req, res) => {
-    const { name, description } = req.body;
 
-    // Basic input validation
-    if (!name || !description) {
+    const { 
+        policyName, 
+        policyDescription, 
+        coverageAmount, 
+        startDate, 
+        endDate,
+        imageUrl
+    } = req.body;
+
+
+    if (!policyName || !policyDescription || !coverageAmount || !startDate || !endDate) 
+        {
         return res.status(400).json({
             success: false,
-            message: 'Name and description are required.'
+            message: "All fields (policyName, policyDesription, coverageAmount, startDate, endDate) are required."
         });
     }
 
     try {
-        const newPolicy = new Policy(req.body);
+        const newPolicy = new Policy({ 
+            policyName, 
+            policyDescription, 
+            coverageAmount, 
+            startDate, 
+            endDate,
+            imageUrl
+        });
+
         await newPolicy.save();
 
         return res.status(201).json({
             success: true,
             message: "Policy created successfully.",
-            data: newPolicy
+            newPolicy
         });
     } catch (err) {
         return res.status(500).json({
@@ -78,6 +97,7 @@ exports.createPolicy = async (req, res) => {
         });
     }
 };
+
 
 exports.updatePolicy = async (req, res) => {
     const { name, description } = req.body;

@@ -84,6 +84,18 @@ export default function Navbar() {
                   Contact
                 </a>
               </li>
+
+              <li
+                onClick={() => navigate('/policies')}
+                className="max-lg:border-b border-gray-300 max-lg:py-3 px-3"
+              >
+                <a
+                  href="javascript:void(0)"
+                  className="hover:text-[#007bff] text-gray-500 block text-lg ">
+                  Policies
+                </a>
+              </li>
+
             </ul>
           </div>
           <div className="flex max-lg:ml-auto space-x-4">

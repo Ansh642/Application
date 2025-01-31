@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema({
         type:String,
         required: true,
     },
+    policies:[{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Policy",
+    }]
 });
 
 const User = mongoose.model('User', userSchema);

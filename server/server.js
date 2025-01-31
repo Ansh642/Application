@@ -1,10 +1,10 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const policyholderRoutes = require('./routes/policyholderRoutes');
 const database = require('./config/database');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
 
 // Create the app instance
 const app = express();
@@ -13,7 +13,13 @@ const app = express();
 require("dotenv").config();
 
 // middleware for sending data
-app.use(bodyParser.json());
+app.use(express.json());
+
+// file-upload
+app.use(fileUpload({
+  useTempFiles : true,
+  tempFileDir : '/tmp/'
+}));
 
 // calling the database function
 database.connect();
@@ -34,7 +40,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'https://application-xwew.onrender.com', // Replace with your backend URL if deployed
+      url: 'http://localhost:5000', // Replace with your backend URL if deployed
     },
   ],
 };
@@ -52,7 +58,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 // Routes
-app.use('/api/', policyholderRoutes);
+app.use('/api', policyholderRoutes);
 
 // Home route (for testing server)
 app.use("/", (req, res) => {
