@@ -7,6 +7,9 @@ import Home from './pages/Home';
 import AboutUs from './pages/About';
 import Contact from './pages/Contact';
 import Policies from './pages/policies';
+import PolicyPage from './pages/PolicyPage';
+import MyPolicies from './pages/User/Mypolicy';
+import MyClaims from './pages/User/Myclaims';
 
 function App() {
 
@@ -19,6 +22,9 @@ function App() {
        <Route path='/login' element={<Login/>}/>    
        <Route path='/signup' element={<Signup/>}/>  
        <Route path='/policies' element={<Policies/>}/>   
+       <Route path='/policies/:id' element={<PolicyPage/>}/>
+       <Route path='/my-policies' element={<MyPolicies/>} />
+       <Route path='/my-claims' element={<MyClaims/>} />
       </Routes>
       <Toaster />
     </div>

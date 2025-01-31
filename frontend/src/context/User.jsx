@@ -22,7 +22,7 @@ export function AuthProvider({children}){
     }, []);
 
     useEffect(() => {
-        axios.defaults.headers.common['Authorization'] = auth.token ? `Bearer ${auth.token}` : null;
+        axios.defaults.headers.common['authorization'] = auth.token ? `Bearer ${auth.token}` : null;
     }, [auth.token]);
 
     const value = {

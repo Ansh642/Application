@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const ClaimSchema = new mongoose.Schema({
 
-    policyholderId: { 
+    claimholderId: { 
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User", 
         required: true 
@@ -21,12 +21,6 @@ const ClaimSchema = new mongoose.Schema({
         required: true, 
         default: Date.now 
     }, 
-    status: { 
-        type: String, 
-        required: true, 
-        enum: ["Pending", "Approved", "Rejected"], 
-        default: "Pending" 
-    }
 }, { timestamps: true });
 
 

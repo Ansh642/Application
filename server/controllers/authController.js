@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 const JWT = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const Policy = require('../models/policyModel');
+const {mailsend} = require("../utils/mailsend");
 
 // Login controller
 exports.signup = async(req,res)=>{
@@ -36,12 +38,15 @@ exports.signup = async(req,res)=>{
        const hashedPassword = await bcrypt.hash(password,10);
        
      // create a new entry in db;
-     const newUser= await User.create({
+     const newUser= new User({
         name,
         email,
         password : hashedPassword,
         image : `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
     });
+    console.log("object");
+
+    await newUser.save();
 
     return res.status(200).json({
         success : true,
@@ -111,3 +116,120 @@ exports.login = async (req, res) => {
         });
     }
 };
+
+
+exports.buyPolicy = async (req, res) => {
+    try {
+        
+        const { id } = req.params;  // Policy ID from URL
+        const userId = req.user.id; // User ID from authentication middleware
+
+        console.log(`User ${userId} is trying to buy policy ${id}`);
+        
+        
+        const policy = await Policy.findById(id);
+        if (!policy) {
+            return res.status(404).json({
+                success: false,
+                message: "Policy not found",
+            });
+        }
+        
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        if (user.policies.includes(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "User already owns this policy",
+            });
+        }
+
+        user.policies.push(id);
+
+        policy.policyholderId.push(userId);
+
+        await user.save();
+        await policy.save();
+
+
+        const emailBody = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+            <h2 style="color: #333;">Policy Purchase Confirmation</h2>
+            <p style="font-size: 16px; color: #555;">
+            Dear ${user.email},
+            </p>
+            <p style="font-size: 16px; color: #555;">
+            Congratulations! Your policy has been successfully purchased.
+            </p>
+            <p style="font-size: 16px; color: #555;">
+            <strong>Policy Name:</strong> ${policy.policyName}<br>
+            <strong>Coverage Amount:</strong> Rs. ${policy.coverageAmount.toLocaleString()}/-<br>
+            <strong>Start Date:</strong> ${policy.startDate}<br>
+            <strong>End Date:</strong> ${policy.endDate}
+            </p>
+            <p style="font-size: 16px; color: #555;">
+            Thank you for choosing us for your insurance needs. We are here to provide you with the best service.
+            </p>
+            <p style="font-size: 16px; color: #555;">
+            If you have any questions or need further assistance, feel free to contact us.
+            </p>
+            <p style="font-size: 16px; color: #555;">
+            Best regards,<br>
+            The LumiClaim Team
+            </p>
+        </div>
+        `;
+
+        mailsend(user.email, 'Policy Purchase Confirmation - Your Policy Details', emailBody)
+        .catch(err => console.error("Error sending email:", err));
+        
+
+        return res.status(200).json({
+            success: true,
+            message: "Policy purchased successfully",
+            data: { user, policy },
+        });
+
+    } catch (error) {
+        console.error("Error in buyPolicy:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+};
+
+exports.myPolicies = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        
+        const userDetails = await User.findById(userId).populate("policies");
+
+        if (!userDetails || !userDetails.policies || userDetails.policies.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No policies bought yet.",
+            });
+        }
+        
+
+        return res.status(200).json({
+            success: true,
+            message: "Policies fetched successfully.",
+            data: userDetails.policies,  // Since we populated it, policies data is available
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+

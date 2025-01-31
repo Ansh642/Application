@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-// import toast from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -26,22 +26,22 @@ export default function Signup() {
   };
 
   const submitHandler = async (e) => {
-    // e.preventDefault();
-    // try {
-    //   const response = await axios.post('http://localhost:4000/api/v1/signup', {
-    //     name,
-    //     email,
-    //     password,
-    //     confirmPassword,
-    //   });
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/api/signup', {
+        name,
+        email,
+        password,
+        confirmPassword,
+      });
 
-    //   if (response.data.success) {
-    //     toast.success('Registration Successful!');
-    //     navigate('/login');
-    //   }
-    // } catch (err) {
-    //   toast.error(err.message);
-    // }
+      if (response.data.success) {
+        toast.success('Registration Successful!');
+        navigate('/login');
+      }
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   return (

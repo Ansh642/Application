@@ -2,18 +2,18 @@ import React,{useState,useEffect} from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function Policies() {
 
   const [policies, setpolicies] = useState([]);
-  
+  const navigate = useNavigate();
   
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/get-policies");
-        console.log(response.data.data);
         setpolicies(response.data.data);
       } catch (error) {
         console.error("Error fetching policies:", error);
@@ -21,6 +21,10 @@ export default function Policies() {
     };
     fetchPolicies();
   }, [])
+
+  const detailPolicy =(id)=>{
+    navigate(`/policies/${id}`);
+  }
   
   return (
     <>
@@ -52,7 +56,7 @@ export default function Policies() {
                     <p><span className="font-semibold text-blue-600">Coverage:</span> Rs.{policy.coverageAmount.toLocaleString() + "/-"}</p>
                     <p><span className="font-semibold text-gray-500">Start Date:</span> {new Date(policy.startDate).toLocaleDateString()}</p>
                   </div>
-                  <button className="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition-all duration-300">
+                  <button onClick={()=>detailPolicy(policy._id)} className="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition-all duration-300">
                     View Details
                   </button>
                 </div>

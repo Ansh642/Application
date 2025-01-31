@@ -28,7 +28,6 @@ exports.getPolicies = async (req, res) => {
 
 exports.getPolicyById = async (req, res) => {
     const { id } = req.params;
-
     try {
         const policy = await Policy.findById(id);
 
@@ -41,7 +40,7 @@ exports.getPolicyById = async (req, res) => {
 
         return res.status(200).json({
             success: true,
-            policy
+            data:policy
         });
     } catch (err) {
         return res.status(500).json({

@@ -4,14 +4,11 @@ const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        unique: true,
-        trim: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        trim: true,
     },
     password: {
         type: String,
@@ -24,6 +21,10 @@ const userSchema = new mongoose.Schema({
     policies:[{
         type: mongoose.Schema.Types.ObjectId, 
         ref: "Policy",
+    }],
+    claims:[{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "Claim",
     }]
 });
 
