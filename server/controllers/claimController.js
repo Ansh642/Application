@@ -14,141 +14,64 @@ const Claim = require('../models/claimModel');
  *         description: Error fetching claims
  */
 
-exports.getClaims = async (req, res) => {
+// for admin only
+exports.updateClaimStatus = async (req, res) => {
     try {
-        const claims = await Claim.find();
-        if (!claims || claims.length === 0) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'No claims found.' 
+        const { claimId, status } = req.body;
+
+        // Validate status
+        if (!["Approved", "Rejected"].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid status value.",
             });
         }
 
-        return res.status(200).json({ 
-            success: true, 
-            claims 
-        });
-    } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error fetching claims.", 
-            error: err.message 
-        });
-    }
-};
-
-
-exports.getClaimById = async (req, res) => {
-    const { id } = req.params;
-    try {
-        const claim = await Claim.findById(id);
-
-        if (!claim) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Claim not found." 
-            });
-        }
-        return res.status(200).json({ 
-            success: true, 
-            claim 
-        });
-    }
-    catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error fetching claim.", 
-            error: err.message 
-        });
-    }
-};
-
-exports.createClaim = async (req, res) => {
-    const { policyholderId, amount, status } = req.body;
-
-    // Basic input validation
-    if (!policyholderId || !amount || !status) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Policyholder ID, amount, and status are required.' 
-        });
-    }
-
-    try {
-        const newClaim = new Claim(req.body);
-        await newClaim.save();
-
-        res.status(201).json({ 
-            success: true, 
-            message: "Claim created successfully.", 
-            data: newClaim 
-        });
-    } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error creating claim.", 
-            error: err.message 
-        });
-    }
-};
-
-
-exports.updateClaim = async (req, res) => {
-    const { policyholderId, amount, status } = req.body;
-
-    // Basic input validation
-    if (!policyholderId || !amount || !status) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Policyholder ID, amount, and status are required.' 
-        });
-    }
-
-    try {
-        const updatedClaim = await Claim.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        // Find claim and update status
+        const updatedClaim = await Claim.findByIdAndUpdate(
+            claimId,
+            { status },
+            { new: true }
+        );
 
         if (!updatedClaim) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Claim not found." 
+            return res.status(404).json({
+                success: false,
+                message: "Claim not found.",
             });
         }
-        return res.status(200).json({ 
-            success: true, 
-            message: "Claim updated successfully.", 
-            data: updatedClaim 
+
+        return res.status(200).json({
+            success: true,
+            message: `Claim ${status} successfully.`,
+            data: updatedClaim,
         });
 
-    } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error updating claim.", 
-            error: err.message 
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+            error: error.message,
         });
     }
 };
 
-exports.deleteClaim = async (req, res) => {
+exports.getPendingClaims = async (req, res) => {
     try {
-        const deletedClaim = await Claim.findByIdAndDelete(req.params.id);
+        const pendingClaims = await Claim.find({ status: "Pending" })
+            .populate("claimholderId", "name email")  // Get user details
+            .populate("policyId", "policyName imageUrl");      // Get policy details
 
-        if (!deletedClaim) {
-            return res.status(404).json({ 
-                success: false, 
-                message: "Claim not found." 
-            });
-        }
-
-        return res.json({ 
-            success: true, 
-            message: "Claim deleted successfully." 
+        return res.status(200).json({
+            success: true,
+            data: pendingClaims
         });
 
-    } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: "Error deleting claim.", 
-            error: err.message 
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+            error: error.message
         });
     }
 };

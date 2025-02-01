@@ -3,7 +3,7 @@ const JWT = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Policy = require('../models/policyModel');
 const {mailsend} = require("../utils/mailsend");
-
+const Claim = require('../models/claimModel');
 
 exports.signup = async (req, res) => {
     try {
@@ -90,6 +90,7 @@ exports.login = async (req, res) => {
             const payload = {
                 email: userDetails.email,
                 id: userDetails._id,
+                role: userDetails.role
             };
 
             const token = JWT.sign(payload, process.env.JWT_SECRET, {
@@ -121,10 +122,8 @@ exports.login = async (req, res) => {
 exports.buyPolicy = async (req, res) => {
     try {
         
-        const { id } = req.params;  // Policy ID from URL
-        const userId = req.user.id; // User ID from authentication middleware
-
-        console.log(`User ${userId} is trying to buy policy ${id}`);
+        const { id } = req.params;  
+        const userId = req.user.id; 
         
         
         const policy = await Policy.findById(id);
@@ -237,11 +236,10 @@ exports.myPolicies = async (req, res) => {
 exports.buyClaim = async (req, res) => {
     try {
         const userId = req.user.id; 
-        const { id } = req.params; 
-        const { claimAmount } = req.body; 
+        const { policyId } = req.body;
 
-    
-        const policy = await Policy.findById(id);
+        // Check if policy exists
+        const policy = await Policy.findById(policyId);
         if (!policy) {
             return res.status(404).json({
                 success: false,
@@ -249,36 +247,45 @@ exports.buyClaim = async (req, res) => {
             });
         }
 
-        // // Check if the user is the policyholder
-        // if (!policy.policyholderId.equals(userId)) {
-        //     return res.status(403).json({
-        //         success: false,
-        //         message: "You are not authorized to claim this policy.",
-        //     });
-        // }
-
-        // Validate claim amount (it should be within coverage limit)
-        if (claimAmount > policy.coverageAmount) {
-            return res.status(400).json({
+        // Check if user exists
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
                 success: false,
-                message: "Claim amount exceeds coverage limit.",
+                message: "User not found.",
             });
         }
 
-        // Create the claim
+        // ✅ Corrected: Create the claim
         const newClaim = await Claim.create({
             claimholderId: userId,
-            policyId: id,
-            claimAmount,
+            policyId: policyId,
+            claimAmount: policy.coverageAmount,
         });
+
+        // Remove the policy from user's policies array
+        user.policies = user.policies.filter(
+            (policy) => policy.toString() !== policyId.toString()
+        );
+
+        policy.policyholderId = policy.policyholderId.filter(
+            (userId) => policy.toString() !== policyId.toString()
+        );
+
+        // Add the claim to user's claims array
+        user.claims.push(newClaim._id);
+
+        // Save updated user data
+        await user.save();
 
         return res.status(200).json({
             success: true,
-            message: "Claim request submitted successfully.",
+            message: "Claim request submitted successfully. The policy has been removed from your policies and added to your claims.",
             data: newClaim,
         });
 
     } catch (error) {
+        console.error("Error in buyClaim:", error); // Debugging log
         return res.status(500).json({
             success: false,
             message: "Internal server error.",
@@ -286,3 +293,27 @@ exports.buyClaim = async (req, res) => {
         });
     }
 };
+
+exports.myClaims = async (req, res) => {
+    try {
+      const userId = req.user.id;
+  
+      const userClaims = await Claim.find({ claimholderId: userId })
+      .populate("policyId", "policyName imageUrl policyDescription")
+        .sort({ createdAt: -1 });
+  
+      res.status(200).json({
+        success: true,
+        message: "User claims fetched successfully",
+        data: userClaims,
+      });
+    } 
+    catch (error) 
+    {
+      res.status(500).json({
+        success: false,
+        message: "Something went wrong while fetching claims",
+      });
+    }
+};
+

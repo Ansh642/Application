@@ -71,7 +71,6 @@ export default function PolicyDetail() {
     try {
       const response = await axios.post(`http://localhost:5000/api/buy-policy/${id}`);
       if (response.data.data) {
-        console.log(response.data.data);
         toast.success("Policy was successfully bought!");
         navigate('/');
       }

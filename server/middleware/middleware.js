@@ -31,12 +31,10 @@ exports.auth = async (req, res, next) => {
 };
 
 exports.isAdmin=(req, res,next)=>{
-
     try
     {
-        const accountType = req.user.accountType;
-
-        if(accountType !== "admin")
+        const role = req.user.role;
+        if(role !== 1)
         {
             return res.status(401).send({
                 success: false,

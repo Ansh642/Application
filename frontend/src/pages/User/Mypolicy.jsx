@@ -4,6 +4,7 @@ import Footer from "../../components/Footer";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { ClipLoader } from "react-spinners";
+import toast from 'react-hot-toast';
 
 export default function MyPolicies() {
 
@@ -37,14 +38,15 @@ export default function MyPolicies() {
     try {
       toast.loading("Processing your claim...");
 
-      const response = await axios.post("http://localhost:5000/api/create-claim", {
-        policyId: policyId,
+      const response = await axios.post("http://localhost:5000/api/buy-claim", {
+        policyId,
       });
 
       toast.dismiss(); // Remove loading toast
-      if (response.data.success) 
+      if (response.data.data) 
         {
         toast.success("Claim request submitted successfully!");
+        navigate('/');
       } 
       else {
         toast.error(response.data.message || "Failed to submit claim.");
@@ -119,12 +121,12 @@ export default function MyPolicies() {
 
               {/* Action Buttons */}
               <div className="mt-4 flex gap-3">
-                <button
+                {/* <button
                   onClick={() => handleViewDetails(policy._id)}
                   className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
                 >
                   View Details
-                </button>
+                </button> */}
                 <button
                   onClick={() => handleClaimPolicy(policy._id)}
                   className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300"

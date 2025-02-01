@@ -4,7 +4,6 @@ require("dotenv").config();
 exports.mailsend = async(email,title,body)=>{
     try{
 
-      console.log(email,title,body);
       const transporter = nodemailer.createTransport({
           host: process.env.MAIL_HOST,
           secure: true,
@@ -21,8 +20,6 @@ exports.mailsend = async(email,title,body)=>{
         subject: `${title}`,
         html: `${body}`,
       });
-
-      console.log(info);
     }
  
     catch(err){

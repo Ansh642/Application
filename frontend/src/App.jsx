@@ -11,7 +11,7 @@ import PolicyPage from './pages/PolicyPage';
 import MyPolicies from './pages/User/Mypolicy';
 import MyClaims from './pages/User/Myclaims';
 import Private from './pages/User/Private';
-import Approvals from './pages/Admin/Approvals';
+import MyApprovals from './pages/Admin/Approvals';
 
 function App() {
 
@@ -35,7 +35,7 @@ function App() {
        </Route>
 
        <Route path="/" element={<Private/>}> 
-       <Route path='/my-approvals' element={<Approvals/>} />
+       <Route path='/my-approvals' element={<MyApprovals/>} />
        </Route>
 
       </Routes>
