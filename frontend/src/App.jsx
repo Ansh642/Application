@@ -6,7 +6,7 @@ import Signup from './pages/Signup';
 import Home from './pages/Home';
 import AboutUs from './pages/About';
 import Contact from './pages/Contact';
-import Policies from './pages/policies';
+import Policies from './pages/Policies';
 import PolicyPage from './pages/PolicyPage';
 import MyPolicies from './pages/User/Mypolicy';
 import MyClaims from './pages/User/Myclaims';
