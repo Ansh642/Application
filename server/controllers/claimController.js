@@ -1,5 +1,5 @@
 const Claim = require('../models/claimModel');
-
+const {mailsend} = require("../utils/mailsend");
 /**
  * @swagger
  * /api/claims:
@@ -32,7 +32,7 @@ exports.updateClaimStatus = async (req, res) => {
             claimId,
             { status },
             { new: true }
-        );
+        ).populate("claimholderId", "email name");
 
         if (!updatedClaim) {
             return res.status(404).json({
@@ -41,13 +41,20 @@ exports.updateClaimStatus = async (req, res) => {
             });
         }
 
+        
+        const userEmail = updatedClaim.claimholderId.email;
+        const userName = updatedClaim.claimholderId.name;
+
+        await mailsend(userEmail, "Claim Status Update", getEmailBody(userName, status));
+
         return res.status(200).json({
             success: true,
-            message: `Claim ${status} successfully.`,
+            message: `Claim ${status} successfully. Email sent to user.`,
             data: updatedClaim,
         });
 
     } catch (error) {
+        console.error("Error in updateClaimStatus:", error); // Debugging log
         return res.status(500).json({
             success: false,
             message: "Internal server error.",
@@ -74,4 +81,25 @@ exports.getPendingClaims = async (req, res) => {
             error: error.message
         });
     }
+};
+
+const getEmailBody = (userName, status) => {
+    return `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; color: #333;">
+            <div style="max-width: 600px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+                <h2 style="color: #4CAF50; text-align: center;">Claim Status Update</h2>
+                <p>Dear <b>${userName}</b>,</p>
+                <p>Your insurance claim request has been <b style="color: ${status === "Approved" ? "#4CAF50" : "#FF5733"};">${status}</b> by our company.</p>
+                ${
+                    status === "Approved"
+                        ? `<p>Congratulations! Your claim has been approved, and the necessary process will begin shortly.</p>`
+                        : `<p>Unfortunately, your claim has been rejected. If you have any concerns, please contact our support team.</p>`
+                }
+                <p>If you have any questions, feel free to reach out to us.</p>
+                <br>
+                <p>Best Regards,</p>
+                <p><b>LumiClaim Support Team</b></p>
+            </div>
+        </div>
+    `;
 };

@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useNavigate } from 'react-router-dom'
-
+import homeLogo from '../assets/team-image.webp'
 export default function Home() {
 
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ export default function Home() {
             </div>
           </div>
           <div className="max-md:mt-12 h-full">
-            <img src="https://readymadeui.com/team-image.webp" alt="banner img" className="w-full h-full object-cover" />
+            <img src={homeLogo} alt="banner img" className="w-full h-full object-cover" />
           </div>
         </div>
       </div>

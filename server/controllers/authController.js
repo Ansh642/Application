@@ -256,27 +256,29 @@ exports.buyClaim = async (req, res) => {
             });
         }
 
-        // ✅ Corrected: Create the claim
+        // ✅ Create the claim
         const newClaim = await Claim.create({
             claimholderId: userId,
             policyId: policyId,
             claimAmount: policy.coverageAmount,
         });
 
-        // Remove the policy from user's policies array
+        // ✅ Remove the policy from user's policies array
         user.policies = user.policies.filter(
             (policy) => policy.toString() !== policyId.toString()
         );
 
+        // ✅ Remove the user from the policy's policyholder array
         policy.policyholderId = policy.policyholderId.filter(
-            (userId) => policy.toString() !== policyId.toString()
+            (holderId) => holderId.toString() !== userId.toString()
         );
 
-        // Add the claim to user's claims array
+        // ✅ Add the claim to the user's claims array
         user.claims.push(newClaim._id);
 
-        // Save updated user data
+        // ✅ Save updates to user and policy
         await user.save();
+        await policy.save();
 
         return res.status(200).json({
             success: true,
