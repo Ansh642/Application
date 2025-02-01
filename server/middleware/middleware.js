@@ -30,3 +30,28 @@ exports.auth = async (req, res, next) => {
     }
 };
 
+exports.isAdmin=(req, res,next)=>{
+
+    try
+    {
+        const accountType = req.user.accountType;
+
+        if(accountType !== "admin")
+        {
+            return res.status(401).send({
+                success: false,
+                message: "This is protected route for admin"
+            });
+        }
+        
+    }
+    catch(err){
+        return res.status(500).send({
+            success: false,
+            message: "Error while authenticating",
+        });
+    }
+    next();
+}
+
+

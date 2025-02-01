@@ -10,6 +10,8 @@ import Policies from './pages/policies';
 import PolicyPage from './pages/PolicyPage';
 import MyPolicies from './pages/User/Mypolicy';
 import MyClaims from './pages/User/Myclaims';
+import Private from './pages/User/Private';
+import Approvals from './pages/Admin/Approvals';
 
 function App() {
 
@@ -23,8 +25,19 @@ function App() {
        <Route path='/signup' element={<Signup/>}/>  
        <Route path='/policies' element={<Policies/>}/>   
        <Route path='/policies/:id' element={<PolicyPage/>}/>
+
+
+       
+
+       <Route path="/" element={<Private/>}> 
        <Route path='/my-policies' element={<MyPolicies/>} />
        <Route path='/my-claims' element={<MyClaims/>} />
+       </Route>
+
+       <Route path="/" element={<Private/>}> 
+       <Route path='/my-approvals' element={<Approvals/>} />
+       </Route>
+
       </Routes>
       <Toaster />
     </div>

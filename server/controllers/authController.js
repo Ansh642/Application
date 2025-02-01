@@ -4,65 +4,65 @@ const bcrypt = require('bcrypt');
 const Policy = require('../models/policyModel');
 const {mailsend} = require("../utils/mailsend");
 
-// Login controller
-exports.signup = async(req,res)=>{
-    try{
-       const {name,email,password,confirmPassword} = req.body;
 
-       if(!name || !email || !password || !confirmPassword)
-       {
-        return res.status(400).json({
-           success: false,
-           message: 'Please enter all required fields',
+exports.signup = async (req, res) => {
+    try {
+        const { name, email, password, confirmPassword } = req.body;
+
+        // Validate input fields
+        if (!name || !email || !password || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Please enter all required fields",
+            });
+        }
+
+        // Password confirmation check
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords do not match",
+            });
+        }
+
+        // Check if the user already exists
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "User already exists",
+            });
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create the new user
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
         });
-       }
 
-       if(password !== confirmPassword)
-       {
-        return res.status(400).json({
-            success: false,
-            message: 'Please enter correct password',
+        // Save the user to the database
+        await newUser.save();
+
+        return res.status(201).json({
+            success: true,
+            message: "User registered successfully",
+            newUser
         });
-       }
-
-       const userDetails = await User.findOne({email});
-
-       if(userDetails)
-       {
-        return res.status(400).json({
-            success: false,
-            message: 'User already exists',
-        });
-       }
-
-       const hashedPassword = await bcrypt.hash(password,10);
-       
-     // create a new entry in db;
-     const newUser= new User({
-        name,
-        email,
-        password : hashedPassword,
-        image : `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
-    });
-    console.log("object");
-
-    await newUser.save();
-
-    return res.status(200).json({
-        success : true,
-        message : 'User added successfully',
-        newUser,
-    });
-  }
-    catch(err)
-    {
+    } catch (err) {
+        console.error("Error in signup:", err);
         return res.status(500).json({
-            success : false,
-            message : err.message
+            success: false,
+            message: "Internal Server Error",
+            error: err.message, // Send the exact error message for debugging
         });
     }
-}
-
+};
 
 exports.login = async (req, res) => {
     try {
@@ -233,3 +233,56 @@ exports.myPolicies = async (req, res) => {
     }
 };
 
+
+exports.buyClaim = async (req, res) => {
+    try {
+        const userId = req.user.id; 
+        const { id } = req.params; 
+        const { claimAmount } = req.body; 
+
+    
+        const policy = await Policy.findById(id);
+        if (!policy) {
+            return res.status(404).json({
+                success: false,
+                message: "Policy not found.",
+            });
+        }
+
+        // // Check if the user is the policyholder
+        // if (!policy.policyholderId.equals(userId)) {
+        //     return res.status(403).json({
+        //         success: false,
+        //         message: "You are not authorized to claim this policy.",
+        //     });
+        // }
+
+        // Validate claim amount (it should be within coverage limit)
+        if (claimAmount > policy.coverageAmount) {
+            return res.status(400).json({
+                success: false,
+                message: "Claim amount exceeds coverage limit.",
+            });
+        }
+
+        // Create the claim
+        const newClaim = await Claim.create({
+            claimholderId: userId,
+            policyId: id,
+            claimAmount,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Claim request submitted successfully.",
+            data: newClaim,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error.",
+            error: error.message,
+        });
+    }
+};

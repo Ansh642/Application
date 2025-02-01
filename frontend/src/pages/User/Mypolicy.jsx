@@ -33,9 +33,29 @@ export default function MyPolicies() {
     navigate(`/policies/${id}`);
   };
 
-  const handleClaimPolicy =()=>{
-    
-  }
+  const handleClaimPolicy = async (policyId) => {
+    try {
+      toast.loading("Processing your claim...");
+
+      const response = await axios.post("http://localhost:5000/api/create-claim", {
+        policyId: policyId,
+      });
+
+      toast.dismiss(); // Remove loading toast
+      if (response.data.success) 
+        {
+        toast.success("Claim request submitted successfully!");
+      } 
+      else {
+        toast.error(response.data.message || "Failed to submit claim.");
+      }
+    } 
+    catch (error) {
+      toast.dismiss(); // Remove loading toast
+      console.error("Error submitting claim:", error);
+      toast.error("Something went wrong while processing your claim.");
+    }
+  };
 
   return (
     <>
@@ -119,8 +139,6 @@ export default function MyPolicies() {
     )}
   </div>
       </div>
-
-
 
     <Footer />
     </>

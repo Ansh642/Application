@@ -19,9 +19,11 @@ export default function PolicyDetail() {
       try {
         const response = await axios.get(`http://localhost:5000/api/get-policy/${id}`);
         setPolicy(response.data.data);
-      } catch (error) {
+      } 
+      catch (error) {
         console.error("Error fetching policy details:", error);
-      } finally {
+      } 
+      finally {
         setLoading(false);
       }
     };
@@ -55,6 +57,12 @@ export default function PolicyDetail() {
   const buyPolicy = async () => {
     if (!auth.user) {
       toast.error("Please Login first");
+      return;
+    }
+
+    if(auth.user.role ==1)
+    {
+      toast.error("Only a user can buy policies");
       return;
     }
 

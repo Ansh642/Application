@@ -98,6 +98,7 @@ export default function Navbar() {
 
             </ul>
           </div>
+
           <div className="flex max-lg:ml-auto space-x-4">
             {auth?.token ? (
               <div className="flex flex-row cursor-pointer gap-6 items-center">
@@ -108,50 +109,60 @@ export default function Navbar() {
                     className="rounded-full h-9 w-9 object-contain mr-10"
                     onClick={() => setShow(!show)}
                   />
-                </div>
+            </div>
 
-                <div
-                  className={`w-36 h-40 bg-white border-[1px] border-gray-300 shadow-lg z-30 right-16 absolute rounded-lg px-1 py-1 visible top-16 cursor-pointer ${
-                    show === true ? `visible` : `invisible`
-                  }`}>
-                  <div className="flex flex-col gap-2 justify-start px-1 py-1 text-lg mt-2 ">
-                    <p
-                      className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
-                      onClick={() => navigate('/my-policies')}>
-                      My Policies
-                    </p>
+      <div
+        className={`w-36 h-auto bg-white border-[1px] border-gray-300 shadow-lg z-30 right-16 absolute rounded-lg px-1 py-1 top-16 cursor-pointer transition-all duration-300 ${
+          show ? "visible opacity-100" : "invisible opacity-0"
+        }`}
+      >
+        <div className="flex flex-col gap-2 justify-start px-1 py-1 text-lg mt-2">
+          {auth.user?.role === 0 ? (
+            <>
+              <p
+                className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
+                onClick={() => navigate('/my-policies')}
+              >
+                My Policies
+              </p>
 
-                    <p onClick={() => navigate('/my-claims')}
-                      className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1">
-                      My Claims
-                    </p>
-                    
-                    <p
-                      className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
-                      onClick={logoutHandler}>
-                      Log out
-                    </p>
-
-                  </div>
-                </div>
-              </div>
-
-            ) : (
-              <>
-              </>
-            )}
-            {!auth?.token && (
-              <>
-                <button
-            className='px-3 py-3 mr-6 bg-blue-600 text-base rounded-[10px] hover:bg-blue-700 transition-all duration-200 text-white'
-            onClick={() => navigate('/signup')}
-          >
-            Get Started
-          </button>
-                
+              <p
+                className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
+                onClick={() => navigate('/my-claims')}
+              >
+                My Claims
+              </p>
             </>
-            )}
-          </div>
+          ) : (
+            <p
+              className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
+              onClick={() => navigate('/my-approvals')}
+            >
+            Approvals
+            </p>
+          )}
+
+          <p
+            className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
+            onClick={logoutHandler}
+          >
+            Log out
+          </p>
+        </div>
+      </div>
+    </div>
+  ) : null}
+
+  {!auth?.token && (
+    <button
+      className="px-3 py-3 mr-6 bg-blue-600 text-base rounded-[10px] hover:bg-blue-700 transition-all duration-200 text-white"
+      onClick={() => navigate('/signup')}
+    >
+      Get Started
+    </button>
+  )}
+</div>
+
         </div>
       </header>
     </div>
