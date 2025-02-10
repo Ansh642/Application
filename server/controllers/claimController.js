@@ -1,5 +1,6 @@
 const Claim = require('../models/claimModel');
 const {mailsend} = require("../utils/mailsend");
+const Policy = require('../models/policyModel');
 /**
  * @swagger
  * /api/claims:
@@ -13,6 +14,9 @@ const {mailsend} = require("../utils/mailsend");
  *       500:
  *         description: Error fetching claims
  */
+
+
+
 
 // for admin only
 exports.updateClaimStatus = async (req, res) => {
@@ -65,23 +69,41 @@ exports.updateClaimStatus = async (req, res) => {
 
 exports.getPendingClaims = async (req, res) => {
     try {
+        // Fetch claims that are still pending
         const pendingClaims = await Claim.find({ status: "Pending" })
-            .populate("claimholderId", "name email")  // Get user details
-            .populate("policyId", "policyName imageUrl");      // Get policy details
+            .populate("claimholderId", "name email")  
+            .populate("policyId", "policyName imageUrl policyholderId");  
+
+        // Fetch user details from the policyholderId array
+        const userDetails = await Promise.all(pendingClaims.map(async (claim) => {
+            const policy = await Policy.findById(claim.policyId._id); // Find policy
+            const policyholder = policy.policyholderId.find(ph => ph.userId.toString() === claim.claimholderId._id.toString());
+
+            return {
+                age: policyholder ? policyholder.age : "Not Provided",
+                gender: policyholder ? policyholder.gender : "Not Provided",
+                medicalHistory: policyholder ? policyholder.medicalHistory : "Not Provided",
+                startDate: policyholder ? policyholder.startDate : "Not Provided",
+                endDate: policyholder ? policyholder.endDate : "Not Provided",
+                userId: claim.claimholderId._id, // Attach the user ID for later use in frontend
+            };
+        }));
 
         return res.status(200).json({
             success: true,
-            data: pendingClaims
+            claims: pendingClaims,
+            userDetails: userDetails, // Send user details in a separate field
         });
-
+        
     } catch (error) {
         return res.status(500).json({
             success: false,
             message: "Internal server error.",
-            error: error.message
+            error: error.message,
         });
     }
 };
+
 
 const getEmailBody = (userName, status) => {
     return `

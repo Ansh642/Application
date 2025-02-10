@@ -1,35 +1,36 @@
-import React,{useState,useEffect} from 'react';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
+import React, { useState, useEffect } from "react";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Policies() {
-
-  const [policies, setpolicies] = useState([]);
+  const [policies, setPolicies] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const fetchPolicies = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/get-policies");
-        setpolicies(response.data.data);
+        setPolicies(response.data.data);
       } catch (error) {
         console.error("Error fetching policies:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPolicies();
-  }, [])
+  }, []);
 
-  const detailPolicy =(id)=>{
+  const detailPolicy = (id) => {
     navigate(`/policies/${id}`);
-  }
-  
+  };
+
   return (
     <>
       <Navbar />
-      
+
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12">
         <div className="container mx-auto px-6">
           {/* Page Header */}
@@ -41,33 +42,48 @@ export default function Policies() {
             <p className="text-gray-500 mt-2 text-lg">Choose a plan that best fits your needs.</p>
           </div>
 
-          {/* Policies Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
-            {policies?.map((policy, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-2xl w-[93%] mx-auto"
-              >
-                <img src={policy.imageUrl} alt={policy.policyName} className="w-full h-40 object-fill" />
-                <div className="p-5">
-                  <h3 className="text-lg font-bold text-gray-900">{policy.policyName}</h3>
-                  <p className="text-gray-600 text-sm mt-2 h-16 overflow-hidden">{policy.policyDescription}</p>
-                  <div className="mt-4 text-sm text-gray-700">
-                    <p><span className="font-semibold text-blue-600">Coverage:</span> Rs.{policy.coverageAmount.toLocaleString() + "/-"}</p>
-                    <p><span className="font-semibold text-gray-500">Start Date:</span> {new Date(policy.startDate).toLocaleDateString()}</p>
+          {/* Loading Spinner */}
+          {loading ? (
+            <div className="flex flex-col gap-4 justify-center items-center min-h-[40vh]">
+              <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <p className="ml-1">Please Wait...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
+              {policies?.map((policy, index) => (
+                <div
+                  key={index}
+                  className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-2xl w-[93%] mx-auto"
+                >
+                  <img src={policy.imageUrl} alt={policy.policyName} className="w-full h-40 object-fill" />
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900">{policy.policyName}</h3>
+                    <p className="text-gray-600 text-sm mt-2 h-16 overflow-hidden">{policy.policyDescription}</p>
+                    <div className="mt-4 text-sm text-gray-700">
+                      <p>
+                        <span className="font-semibold text-blue-600">Coverage:</span> Rs.
+                        {policy.coverageAmount.toLocaleString() + "/-"}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-gray-500">Start Date:</span>{" "}
+                        {new Date(policy.startDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => detailPolicy(policy._id)}
+                      className="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                    >
+                      View Details
+                    </button>
                   </div>
-                  <button onClick={()=>detailPolicy(policy._id)} className="mt-5 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg text-sm font-semibold transition-all duration-300">
-                    View Details
-                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
-
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <Footer/>
+      <Footer />
     </>
   );
 }

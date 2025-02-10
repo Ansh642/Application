@@ -121,11 +121,41 @@ exports.login = async (req, res) => {
 
 exports.buyPolicy = async (req, res) => {
     try {
+        const { id } = req.params;
+        const userId = req.user.id;
         
-        const { id } = req.params;  
-        const userId = req.user.id; 
-        
-        
+        // Get additional details from the request body
+        const { age, gender, medicalHistory, startDate, endDate } = req.body;
+
+        // Validation: Age should be between 18 and 70
+        if (age < 18 || age > 70) {
+            return res.status(400).json({
+                success: false,
+                message: "Age should be between 18 and 70 years old to purchase the policy.",
+            });
+        }
+        console.log(age);
+
+        // Validation: Start date should not be before today's date
+        const today = new Date();
+        const start = new Date(startDate);
+        if (start < today) {
+            return res.status(400).json({
+                success: false,
+                message: "Start date cannot be before today's date.",
+            });
+        }
+
+        // Validation: End date should be later than the start date
+        const end = new Date(endDate);
+        if (end <= start) {
+            return res.status(400).json({
+                success: false,
+                message: "End date should be later than the start date.",
+            });
+        }
+
+        // Find the policy
         const policy = await Policy.findById(id);
         if (!policy) {
             return res.status(404).json({
@@ -133,7 +163,8 @@ exports.buyPolicy = async (req, res) => {
                 message: "Policy not found",
             });
         }
-        
+
+        // Find the user
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({
@@ -142,6 +173,7 @@ exports.buyPolicy = async (req, res) => {
             });
         }
 
+        // Check if the user already owns the policy
         if (user.policies.includes(id)) {
             return res.status(400).json({
                 success: false,
@@ -149,14 +181,24 @@ exports.buyPolicy = async (req, res) => {
             });
         }
 
+        // Add the policy to the user's list of policies
         user.policies.push(id);
 
-        policy.policyholderId.push(userId);
+        // Add the user to the policyholderId array in the policy model, along with additional details
+        policy.policyholderId.push({
+            userId,
+            age,
+            gender,
+            medicalHistory,
+            startDate,
+            endDate
+        });
 
+        // Save the user and policy
         await user.save();
         await policy.save();
 
-
+        // Send confirmation email
         const emailBody = `
         <div style="font-family: Arial, sans-serif; line-height: 1.5;">
             <h2 style="color: #333;">Policy Purchase Confirmation</h2>
@@ -169,8 +211,14 @@ exports.buyPolicy = async (req, res) => {
             <p style="font-size: 16px; color: #555;">
             <strong>Policy Name:</strong> ${policy.policyName}<br>
             <strong>Coverage Amount:</strong> Rs. ${policy.coverageAmount.toLocaleString()}/-<br>
-            <strong>Start Date:</strong> ${policy.startDate}<br>
-            <strong>End Date:</strong> ${policy.endDate}
+            <strong>Start Date:</strong> ${new Date(policy.startDate).toLocaleDateString()}<br>
+            <strong>End Date:</strong> ${new Date(policy.endDate).toLocaleDateString()}<br>
+            <strong>Your Details:</strong><br>
+            <strong>Age:</strong> ${age}<br>
+            <strong>Gender:</strong> ${gender}<br>
+            <strong>Medical History:</strong> ${medicalHistory}<br>
+            <strong>Start Date of Policy:</strong> ${new Date(startDate)}<br>
+            <strong>End Date of Policy:</strong> ${new Date(endDate)}
             </p>
             <p style="font-size: 16px; color: #555;">
             Thank you for choosing us for your insurance needs. We are here to provide you with the best service.
@@ -185,10 +233,11 @@ exports.buyPolicy = async (req, res) => {
         </div>
         `;
 
+        // Send the email
         mailsend(user.email, 'Policy Purchase Confirmation - Your Policy Details', emailBody)
-        .catch(err => console.error("Error sending email:", err));
-        
+            .catch(err => console.error("Error sending email:", err));
 
+        // Respond with a success message
         return res.status(200).json({
             success: true,
             message: "Policy purchased successfully",
@@ -204,6 +253,7 @@ exports.buyPolicy = async (req, res) => {
         });
     }
 };
+
 
 exports.myPolicies = async (req, res) => {
     try {
@@ -262,19 +312,14 @@ exports.buyClaim = async (req, res) => {
             policyId: policyId,
             claimAmount: policy.coverageAmount,
         });
+        
+        user.claims.push(newClaim._id);
 
-        // ✅ Remove the policy from user's policies array
+        // ✅ Remove the policy from the user's policies array
         user.policies = user.policies.filter(
             (policy) => policy.toString() !== policyId.toString()
         );
 
-        // ✅ Remove the user from the policy's policyholder array
-        policy.policyholderId = policy.policyholderId.filter(
-            (holderId) => holderId.toString() !== userId.toString()
-        );
-
-        // ✅ Add the claim to the user's claims array
-        user.claims.push(newClaim._id);
 
         // ✅ Save updates to user and policy
         await user.save();
@@ -295,6 +340,9 @@ exports.buyClaim = async (req, res) => {
         });
     }
 };
+
+
+
 
 exports.myClaims = async (req, res) => {
     try {

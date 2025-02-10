@@ -12,6 +12,7 @@ import MyPolicies from './pages/User/Mypolicy';
 import MyClaims from './pages/User/Myclaims';
 import Private from './pages/User/Private';
 import MyApprovals from './pages/Admin/Approvals';
+import NotFound from './pages/NotFound';
 
 function App() {
 
@@ -25,7 +26,7 @@ function App() {
        <Route path='/signup' element={<Signup/>}/>  
        <Route path='/policies' element={<Policies/>}/>   
        <Route path='/policies/:id' element={<PolicyPage/>}/>
-
+       <Route path='*' element={<NotFound/>} />
 
        
 

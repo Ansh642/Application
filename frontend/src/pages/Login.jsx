@@ -107,14 +107,14 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <Link
                 to="/reset-password"
                 className="font-medium text-sm text-blue-600 hover:text-blue-500"
               >
                 Forgot your password?
               </Link>
-            </div>
+            </div> */}
 
             <div>
               <button

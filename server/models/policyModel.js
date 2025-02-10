@@ -1,20 +1,41 @@
 const mongoose = require("mongoose");
 
 const PolicySchema = new mongoose.Schema({
-
-    policyholderId: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: "User", 
+    policyholderId: [{
+        userId: { 
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "User", 
+        },
+        gender: { 
+            type: String, 
+            enum: ['Male', 'Female', 'Other'], 
+            required: true 
+        },
+        age: {
+            type: Number,  
+            required: true
+        },
+        medicalHistory: {
+            type: String,  
+            required: true
+        },
+        startDate: { 
+            type: Date, 
+            required: true 
+        },
+        endDate: { 
+            type: Date, 
+            required: true 
+        }
     }],
-    policyName:{
+    policyName: {
         type: String, 
         required: true,
     },
-    policyDescription:{
+    policyDescription: {
         type: String, 
         required: true,
     },
-
     coverageAmount: { 
         type: Number, 
         required: true 
@@ -27,11 +48,10 @@ const PolicySchema = new mongoose.Schema({
         type: Date, 
         required: true 
     },
-    imageUrl:{
-        type:String,
-        required:true
+    imageUrl: {
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 
 module.exports = mongoose.model("Policy", PolicySchema);
-

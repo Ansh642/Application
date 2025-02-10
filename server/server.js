@@ -5,7 +5,7 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
-const Sentry = require("@sentry/node");
+const promClient = require("prom-client"); // Import prom-client
 require("dotenv").config();
 
 // Create Express app
@@ -25,21 +25,7 @@ app.use(
 // Connect to Database
 database.connect();
 
-// CORS Configuration (Update `allowedOrigins` for better security)
-const allowedOrigins = ["http://localhost:5173", "https://yourfrontend.com"];
-
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors());
 
 // Swagger API Documentation Setup
 const swaggerDefinition = {
@@ -75,15 +61,46 @@ app.get("/", (req, res) => {
   });
 });
 
+// Prometheus Metrics Setup
+const register = new promClient.Registry();
+promClient.collectDefaultMetrics({ register }); // Collect default metrics (e.g., CPU, memory)
+
+// Create a custom metric (example: HTTP request duration)
+const httpRequestDurationMicroseconds = new promClient.Histogram({
+  name: "http_request_duration_seconds",
+  help: "Duration of HTTP requests in seconds",
+  labelNames: ["method", "route", "status_code"],
+  buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10], // Buckets for response time ranges
+});
+
+// Register the custom metric
+register.registerMetric(httpRequestDurationMicroseconds);
+
+// Middleware to track HTTP request duration
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = (Date.now() - start) / 1000; // Convert to seconds
+    httpRequestDurationMicroseconds
+      .labels(req.method, req.route?.path || req.url, res.statusCode)
+      .observe(duration);
+  });
+  next();
+});
+
+// Expose metrics endpoint for Prometheus
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", register.contentType);
+  res.end(await register.metrics());
+});
+
 // Start Server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
 
-Sentry.init({ dsn: 'https://ae876285285821fd2c7b62c23d65ffcc@o4508753618927616.ingest.de.sentry.io/4508753634394192' });
+if (require.main === module) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+}
 
-
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
-});
+module.exports = app; // ✅ Export the app properly

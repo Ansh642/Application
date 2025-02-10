@@ -7,13 +7,19 @@ import toast from "react-hot-toast";
 
 export default function MyApprovals() {
   const [claims, setClaims] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPendingClaims = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/pending-claims");
-        setClaims(response.data.data);
+
+        // Destructure the claims and userDetails from the response
+        const { claims, userDetails } = response.data;
+
+        setClaims(claims);
+        setUserDetails(userDetails);
       } catch (error) {
         console.error("Error fetching claims:", error);
       } finally {
@@ -77,12 +83,11 @@ export default function MyApprovals() {
             </div>
           ) : (
             <div className="flex flex-col gap-6 w-full md:w-2/3">
-              {claims?.map((claim) => (
+              {claims?.map((claim, index) => (
                 <div
                   key={claim._id}
                   className="bg-white shadow-md rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl flex flex-col md:flex-row items-center md:items-start w-full p-5"
                 >
-                  
                   {/* Policy Image */}
                   <img
                     src={claim.policyId.imageUrl || "https://via.placeholder.com/150"}
@@ -108,6 +113,27 @@ export default function MyApprovals() {
                         {new Date(claim.claimDate).toLocaleDateString()}
                       </p>
                     </div>
+
+                    {/* Additional User Details */}
+                    {userDetails[index] && (
+                      <div className="mt-4 text-gray-700 space-y-1 text-sm">
+                        <p>
+                          <span className="font-semibold text-gray-500">Age:</span> {userDetails[index].age}
+                        </p>
+                        <p>
+                          <span className="font-semibold text-gray-500">Gender:</span> {userDetails[index].gender}
+                        </p>
+                        <p>
+                          <span className="font-semibold text-gray-500 ">Medical History:</span> {userDetails[index].medicalHistory.charAt(0).toUpperCase() + userDetails[index].medicalHistory.slice(1).toLowerCase()}
+                        </p>
+                        <p>
+                          <span className="font-semibold text-gray-500">Policy Start Date:</span> {new Date(userDetails[index].startDate).toLocaleDateString()}
+                        </p>
+                        <p>
+                          <span className="font-semibold text-gray-500">Policy End Date:</span> {new Date(userDetails[index].endDate).toLocaleDateString()}
+                        </p>
+                      </div>
+                    )}
 
                     {/* Action Buttons */}
                     <div className="mt-4 flex gap-3">
