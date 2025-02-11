@@ -134,7 +134,6 @@ exports.buyPolicy = async (req, res) => {
                 message: "Age should be between 18 and 70 years old to purchase the policy.",
             });
         }
-        console.log(age);
 
         // Validation: Start date should not be before today's date
         const today = new Date();

@@ -10,15 +10,7 @@ const {auth, isAdmin} = require('../middleware/middleware');
 // Policy routes
 router.get('/get-policies', policyController.getPolicies);
 router.get('/get-policy/:id', policyController.getPolicyById);
-router.post('/create-policy', policyController.createPolicy);
-router.put('/policies/:id', policyController.updatePolicy);
-router.delete('/policies/:id', policyController.deletePolicy);
-
-// Claim routes
-// router.get('/claims', claimController.getClaims);
-// router.get('/claims/:id', claimController.getClaimById);
-// router.put('/claims/:id', claimController.updateClaim);
-// router.delete('/claims/:id', claimController.deleteClaim);
+router.post('/create-policy', auth,isAdmin,policyController.createPolicy);
 
 
 //authentication routes
@@ -35,4 +27,5 @@ router.get("/user-auth", auth, (req, res) => {res.status(200).send({ ok: true })
 router.get("/admin-auth", auth,isAdmin, (req, res) => {res.status(200).send({ ok: true });});
 router.get("/pending-claims",auth,isAdmin,claimController.getPendingClaims);
 router.post("/update-claim-status",auth,isAdmin,claimController.updateClaimStatus);
+
 module.exports = router;

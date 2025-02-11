@@ -116,7 +116,7 @@ export default function PolicyDetail() {
             <img
               src={policy.imageUrl}
               alt={policy.policyName}
-              className="w-full h-64 object-fill rounded-lg shadow-md"
+              className="w-full h-72 object-fill rounded-lg shadow-md"
             />
             <div className="absolute inset-0 bg-black bg-opacity-30 rounded-lg"></div>
           </div>

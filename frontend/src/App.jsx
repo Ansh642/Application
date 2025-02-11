@@ -11,8 +11,10 @@ import PolicyPage from './pages/PolicyPage';
 import MyPolicies from './pages/User/Mypolicy';
 import MyClaims from './pages/User/Myclaims';
 import Private from './pages/User/Private';
+import PrivateAdmin from './pages/Admin/Private';
 import MyApprovals from './pages/Admin/Approvals';
 import NotFound from './pages/NotFound';
+import CreatePolicy from './pages/Admin/CreatePolicy';
 
 function App() {
 
@@ -35,8 +37,9 @@ function App() {
        <Route path='/my-claims' element={<MyClaims/>} />
        </Route>
 
-       <Route path="/" element={<Private/>}> 
+       <Route path="/" element={<PrivateAdmin/>}> 
        <Route path='/my-approvals' element={<MyApprovals/>} />
+       <Route path='/create-policy' element={<CreatePolicy/>} />
        </Route>
 
       </Routes>

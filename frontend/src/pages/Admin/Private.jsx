@@ -3,7 +3,7 @@ import { Link, Outlet } from "react-router-dom";
 import axios from "axios";
 import { AppContext } from '../../context/User';
 
-export default function Private() {
+export default function PrivateAdmin() {
   const [ok, setOk] = useState(false);
   const [loading, setLoading] = useState(true); // Loading state
   const { auth, setauth } = useContext(AppContext);

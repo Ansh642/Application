@@ -7,12 +7,15 @@ const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const promClient = require("prom-client"); // Import prom-client
 require("dotenv").config();
+const path = require('path');
 
 // Create Express app
 const app = express();
 
 // Middleware
 app.use(express.json());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Enable file uploads
 app.use(

@@ -3,7 +3,7 @@ import React from 'react';
 export default function Footer() {
   return (
     <div>
-      <footer className="bg-blue-600 mt-6 py-16">
+      <footer className="bg-blue-600 py-16">
         <div className="mx-auto max-w-screen-xl px-6 sm:px-8 lg:px-12">
           <div className="sm:flex sm:items-center sm:justify-between">
             {/* Logo section */}
