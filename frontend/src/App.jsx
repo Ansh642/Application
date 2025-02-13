@@ -15,6 +15,7 @@ import PrivateAdmin from './pages/Admin/Private';
 import MyApprovals from './pages/Admin/Approvals';
 import NotFound from './pages/NotFound';
 import CreatePolicy from './pages/Admin/CreatePolicy';
+import Dashboard from './pages/Admin/Dashboard';
 
 function App() {
 
@@ -40,6 +41,7 @@ function App() {
        <Route path="/" element={<PrivateAdmin/>}> 
        <Route path='/my-approvals' element={<MyApprovals/>} />
        <Route path='/create-policy' element={<CreatePolicy/>} />
+       <Route path='/dashboard' element={<Dashboard/>} />
        </Route>
 
       </Routes>

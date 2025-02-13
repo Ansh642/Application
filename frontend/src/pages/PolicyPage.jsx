@@ -168,7 +168,7 @@ export default function PolicyDetail() {
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">Age</label>
               <input
-                type="number"
+                type="text"
                 name="age"
                 value={formData.age}
                 onChange={handleFormChange}

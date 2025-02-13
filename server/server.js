@@ -30,28 +30,33 @@ database.connect();
 
 app.use(cors());
 
-// Swagger API Documentation Setup
-const swaggerDefinition = {
-  openapi: "3.0.0",
-  info: {
-    title: "Claims Management API",
-    version: "1.0.0",
-    description: "API for managing policyholders, claims, and policies.",
-  },
-  servers: [
-    {
-      url: process.env.BASE_URL || "http://localhost:5000",
+// Swagger configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Policyholder API',
+      version: '1.0.0',
+      description: 'API documentation for Policyholder management system',
     },
-  ],
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT}`,
+        description: 'Local server',
+      },
+      {
+        url: 'https://application-xwew.onrender.com', // Replace with your production URL
+        description: 'Production server',
+      },
+    ],
+  },
+  apis: ['./routes/*.js'], // Path to the API routes
 };
 
-const options = {
-  swaggerDefinition,
-  apis: ["./routes/*.js"], // API route files
-};
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
-const swaggerSpec = swaggerJSDoc(options);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Serve Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // API Routes
 app.use("/api", policyholderRoutes);
@@ -68,7 +73,7 @@ app.get("/", (req, res) => {
 const register = new promClient.Registry();
 promClient.collectDefaultMetrics({ register }); // Collect default metrics (e.g., CPU, memory)
 
-// Create a custom metric (example: HTTP request duration)
+// Custom Metrics
 const httpRequestDurationMicroseconds = new promClient.Histogram({
   name: "http_request_duration_seconds",
   help: "Duration of HTTP requests in seconds",
@@ -76,18 +81,44 @@ const httpRequestDurationMicroseconds = new promClient.Histogram({
   buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10], // Buckets for response time ranges
 });
 
-// Register the custom metric
-register.registerMetric(httpRequestDurationMicroseconds);
+const httpRequestsTotal = new promClient.Counter({
+  name: "http_requests_total",
+  help: "Total number of HTTP requests",
+  labelNames: ["method", "route", "status_code"],
+});
 
-// Middleware to track HTTP request duration
+const httpErrorsTotal = new promClient.Counter({
+  name: "http_errors_total",
+  help: "Total number of HTTP errors",
+  labelNames: ["method", "route", "status_code"],
+});
+
+// Register custom metrics
+register.registerMetric(httpRequestDurationMicroseconds);
+register.registerMetric(httpRequestsTotal);
+register.registerMetric(httpErrorsTotal);
+
+// Middleware to track HTTP requests and errors
 app.use((req, res, next) => {
   const start = Date.now();
+
+  // Increment total requests counter
+  httpRequestsTotal.inc({ method: req.method, route: req.route?.path || req.url, status_code: res.statusCode });
+
   res.on("finish", () => {
     const duration = (Date.now() - start) / 1000; // Convert to seconds
+
+    // Track request duration
     httpRequestDurationMicroseconds
       .labels(req.method, req.route?.path || req.url, res.statusCode)
       .observe(duration);
+
+    // Track errors (status code >= 400)
+    if (res.statusCode >= 400) {
+      httpErrorsTotal.inc({ method: req.method, route: req.route?.path || req.url, status_code: res.statusCode });
+    }
   });
+
   next();
 });
 
@@ -103,6 +134,8 @@ const PORT = process.env.PORT || 5000;
 if (require.main === module) {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on port ${PORT}`);
+    console.log("Swagger at http://localhost:5000/api-docs");
+    console.log("Monitoring tool at http://localhost:5000/metrics");
   });
 }
 

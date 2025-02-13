@@ -137,6 +137,13 @@ export default function Navbar() {
             <>
             <p
               className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
+              onClick={() => navigate('/dashboard')}
+            >
+              Dashboard
+            </p>
+
+            <p
+              className="text-blue-700 hover:bg-blue-100 rounded-lg px-2 py-1"
               onClick={() => navigate('/create-policy')}
             >
               New Policy

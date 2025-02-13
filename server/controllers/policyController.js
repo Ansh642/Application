@@ -3,28 +3,28 @@ const path = require('path');
 const fs = require('fs');
 
 
-exports.getPolicies = async (req, res) => {
+exports.getPolicies = async (req) => {
     try {
-        
-        const policies = await Policy.find();
-
-        if (!policies || policies.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No policies found.'
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            data:policies
-        });
+      const policies = await Policy.find();  // Fetch policies from DB
+  
+      if (!policies || policies.length === 0) {
+        return {
+          success: false,
+          message: 'No policies found.'
+        };
+      }
+  
+      return {
+        success: true,
+        data: policies
+      };
     } catch (err) {
-        return res.status(500).json({
-            success: false,
-            message: "Error fetching policies.",
-            error: err.message
-        });
+      console.error(err);
+      return {
+        success: false,
+        message: "Error fetching policies.",
+        error: err.message
+      };
     }
 };
 
@@ -70,6 +70,8 @@ exports.createPolicy = async (req, res) => {
         imageUrl:image
       });
 
+      console.log(newPolicy);
+
       res.status(201).json({ 
         message: 'Policy created successfully', 
         policy: newPolicy 
@@ -80,3 +82,5 @@ exports.createPolicy = async (req, res) => {
     res.status(500).json({ message: 'Server Error', error: error.message });
   }
 };
+
+

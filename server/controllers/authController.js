@@ -136,23 +136,23 @@ exports.buyPolicy = async (req, res) => {
         }
 
         // Validation: Start date should not be before today's date
-        const today = new Date();
-        const start = new Date(startDate);
-        if (start < today) {
-            return res.status(400).json({
-                success: false,
-                message: "Start date cannot be before today's date.",
-            });
-        }
+        // const today = new Date();
+        // const start = new Date(startDate);
+        // if (start < today) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "Start date cannot be before today's date.",
+        //     });
+        // }
 
         // Validation: End date should be later than the start date
-        const end = new Date(endDate);
-        if (end <= start) {
-            return res.status(400).json({
-                success: false,
-                message: "End date should be later than the start date.",
-            });
-        }
+        // const end = new Date(endDate);
+        // if (end <= start) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "End date should be later than the start date.",
+        //     });
+        // }
 
         // Find the policy
         const policy = await Policy.findById(id);

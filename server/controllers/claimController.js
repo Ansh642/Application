@@ -1,21 +1,7 @@
 const Claim = require('../models/claimModel');
 const {mailsend} = require("../utils/mailsend");
+const User = require('../models/userModel'); 
 const Policy = require('../models/policyModel');
-/**
- * @swagger
- * /api/claims:
- *   get:
- *     summary: Get all claims
- *     responses:
- *       200:
- *         description: A list of claims
- *       404:
- *         description: No claims found
- *       500:
- *         description: Error fetching claims
- */
-
-
 
 
 // for admin only
@@ -102,6 +88,19 @@ exports.getPendingClaims = async (req, res) => {
             error: error.message,
         });
     }
+};
+
+
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json({
+        data: users
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users", error });
+  }
 };
 
 
