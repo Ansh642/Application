@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div>
-  <div className="bg-white text-black text-[15px]">
+     <div className="bg-white text-black text-[15px]">
     
     <Navbar/>
 
@@ -213,8 +213,6 @@ export default function Home() {
 
     </div>
     
-    
-
     <div className='mt-20'>
     <Footer/>
     </div>

@@ -16,6 +16,7 @@ import MyApprovals from './pages/Admin/Approvals';
 import NotFound from './pages/NotFound';
 import CreatePolicy from './pages/Admin/CreatePolicy';
 import Dashboard from './pages/Admin/Dashboard';
+import ForgotPass from './pages/ForgotPass';
 
 function App() {
 
@@ -26,12 +27,11 @@ function App() {
       <Route path='/about' element={<AboutUs/>}/>
       <Route path='/contact' element={<Contact/>}/>
        <Route path='/login' element={<Login/>}/>    
-       <Route path='/signup' element={<Signup/>}/>  
+       <Route path='/signup' element={<Signup/>}/>
+       <Route path='/forgot-password' element={<ForgotPass/>}/>  
        <Route path='/policies' element={<Policies/>}/>   
        <Route path='/policies/:id' element={<PolicyPage/>}/>
        <Route path='*' element={<NotFound/>} />
-
-       
 
        <Route path="/" element={<Private/>}> 
        <Route path='/my-policies' element={<MyPolicies/>} />

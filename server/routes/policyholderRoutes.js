@@ -5,12 +5,11 @@ const policyController = require('../controllers/policyController');
 const claimController = require('../controllers/claimController');
 const authController = require('../controllers/authController');
 const { auth, isAdmin } = require('../middleware/middleware');
-
-
 const policyCache = new NodeCache({ stdTTL: 3600, checkperiod: 600 }); 
 
+
+// policy routes
 router.get('/get-policies', async (req, res) => {
-  // Check if policies are cached
   const cachedPolicies = policyCache.get('policies');
 
   if (cachedPolicies) {
@@ -49,10 +48,13 @@ router.post('/create-policy', auth, isAdmin, policyController.createPolicy);
 // Authentication routes
 router.post('/login', authController.login);
 router.post('/signup', authController.signup);
+router.post('/forgot-password', authController.forgotPassword);
 router.post('/buy-policy/:id', auth, authController.buyPolicy);
 router.get('/my-policies', auth, authController.myPolicies);
 router.post('/buy-claim', auth, authController.buyClaim);
 router.get('/my-claims', auth, authController.myClaims);
+
+
 router.get("/user-auth", auth, (req, res) => {
   res.status(200).send({ ok: true });
 });
@@ -62,6 +64,8 @@ router.get("/admin-auth", auth, isAdmin, (req, res) => {
   res.status(200).send({ ok: true });
 });
 
+
+// Claim routes
 /**
  * @swagger
  * /api/pending-claims:
@@ -253,4 +257,11 @@ router.post("/update-claim-status", auth, isAdmin, claimController.updateClaimSt
  */
 router.get("/get-users", auth, isAdmin, claimController.getAllUsers);
 
+
+
+
+
 module.exports = router;
+
+
+

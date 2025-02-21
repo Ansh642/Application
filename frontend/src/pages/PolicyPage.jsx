@@ -108,6 +108,7 @@ export default function PolicyDetail() {
 
   return (
     <>
+    <div className={`min-h-screen transition duration-300 ${formVisible ? 'blur-sm' : ''}`}>
       <Navbar />
 
       <div className="min-h-screen bg-gradient-to-b from-blue-100 to-blue-50 py-16 flex justify-center items-center">
@@ -156,6 +157,10 @@ export default function PolicyDetail() {
         </div>
       </div>
 
+
+      <Footer />
+    </div>
+    <>
       {/* Form for Policy Purchase */}
       {formVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -251,8 +256,8 @@ export default function PolicyDetail() {
           </form>
         </div>
       )}
+      </>
 
-      <Footer />
-    </>
+      </>
   );
 }
