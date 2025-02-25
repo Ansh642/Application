@@ -112,6 +112,12 @@ export default function MyApprovals() {
                         <span className="font-semibold text-gray-500">Request Date:</span>{" "}
                         {new Date(claim.claimDate).toLocaleDateString()}
                       </p>
+
+                      <p>
+                        <span className="font-semibold text-gray-500 capitalize">Claim reason: </span>{" "}
+                        {claim.claimReason}
+                      </p>
+
                     </div>
 
                     {/* Additional User Details */}
@@ -126,12 +132,12 @@ export default function MyApprovals() {
                         <p>
                           <span className="font-semibold text-gray-500 ">Medical History:</span> {userDetails[index].medicalHistory.charAt(0).toUpperCase() + userDetails[index].medicalHistory.slice(1).toLowerCase()}
                         </p>
-                        <p>
+                        {/* <p>
                           <span className="font-semibold text-gray-500">Policy Start Date:</span> {new Date(userDetails[index].startDate).toLocaleDateString()}
                         </p>
                         <p>
                           <span className="font-semibold text-gray-500">Policy End Date:</span> {new Date(userDetails[index].endDate).toLocaleDateString()}
-                        </p>
+                        </p> */}
                       </div>
                     )}
 

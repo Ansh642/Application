@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
@@ -7,11 +7,13 @@ import { AppContext } from "../context/User";
 import toast from 'react-hot-toast';
 
 export default function PolicyDetail() {
+
   const { id } = useParams();
   const [policy, setPolicy] = useState(null);
   const [loading, setLoading] = useState(true);
   const [buying, setBuying] = useState(false);
   const [formVisible, setFormVisible] = useState(false);  
+  const inputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     age: '',
@@ -20,6 +22,7 @@ export default function PolicyDetail() {
     startDate: '',
     endDate: ''
   });
+
   const { auth } = useContext(AppContext);
   const navigate = useNavigate();
 
@@ -81,11 +84,7 @@ export default function PolicyDetail() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Close the form before starting the API request
     setFormVisible(false);
-  
-    // Show the loading indicator for buying
     setBuying(true);
   
     try {
@@ -96,18 +95,19 @@ export default function PolicyDetail() {
   
       if (response.data.data) {
         toast.success("Policy was successfully bought!");
-        navigate('/');
+        navigate('/my-policies');
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
-      setBuying(false);  // Stop the loading indicator after the request finishes
+      setBuying(false);
     }
   };
-  
+   
 
   return (
     <>
+
     <div className={`min-h-screen transition duration-300 ${formVisible ? 'blur-sm' : ''}`}>
       <Navbar />
 
@@ -157,17 +157,19 @@ export default function PolicyDetail() {
         </div>
       </div>
 
+     
+      
 
       <Footer />
+
     </div>
-    <>
-      {/* Form for Policy Purchase */}
+
+       {/* Form for Policy Purchase */}
       {formVisible && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <form
             onSubmit={handleSubmit}
-            className="bg-white p-8 rounded-lg shadow-xl w-[30%]"
-          >
+            className="bg-white p-8 rounded-lg shadow-xl w-[30%]">
             <h3 className="text-xl font-semibold mb-4">Enter Your Details</h3>
 
             <div className="mb-4">
@@ -175,6 +177,7 @@ export default function PolicyDetail() {
               <input
                 type="text"
                 name="age"
+                ref={inputRef}
                 value={formData.age}
                 onChange={handleFormChange}
                 placeholder="Write your age"
@@ -256,8 +259,9 @@ export default function PolicyDetail() {
           </form>
         </div>
       )}
-      </>
 
-      </>
+    </>
+
   );
 }
+

@@ -20,19 +20,19 @@ router.get('/get-policies', async (req, res) => {
       message: 'Fetched from cache',
       data: cachedPolicies
     });
-  } else {
+  } 
+  else {
     console.log("Cache miss, fetching from database...");
     
     try {
       const policies = await policyController.getPolicies(req);
       
-      // Cache the fetched data
-      policyCache.set('policies', policies.data, 3600); // Cache for 1 hour
+      policyCache.set('policies', policies.data, 3600); // 3600 means 1 hr
       console.log("Data fetched from database and cached");
       
       return res.status(200).json(policies);
-    } catch (err) {
-      console.error(err);
+    } 
+    catch (err) {
       return res.status(500).json({
         success: false,
         message: 'Error fetching policies',

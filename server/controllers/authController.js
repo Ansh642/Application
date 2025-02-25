@@ -17,7 +17,6 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Password confirmation check
         if (password !== confirmPassword) {
             return res.status(400).json({
                 success: false,
@@ -35,7 +34,6 @@ exports.signup = async (req, res) => {
             });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create the new user
@@ -55,11 +53,10 @@ exports.signup = async (req, res) => {
             newUser
         });
     } catch (err) {
-        console.error("Error in signup:", err);
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",
-            error: err.message, // Send the exact error message for debugging
+            error: err.message, 
         });
     }
 };
@@ -170,24 +167,24 @@ exports.buyPolicy = async (req, res) => {
             });
         }
 
-        // Validation: Start date should not be before today's date
-        // const today = new Date();
-        // const start = new Date(startDate);
-        // if (start < today) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Start date cannot be before today's date.",
-        //     });
-        // }
+        const today = new Date();
+        const start = new Date(startDate);
+        const end = new Date(endDate);
 
-        // Validation: End date should be later than the start date
-        // const end = new Date(endDate);
-        // if (end <= start) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "End date should be later than the start date.",
-        //     });
-        // }
+        if (start < today) {
+            return res.status(400).json({
+                success: false,
+                message: "Start date cannot be before today's date.",
+            });
+        }
+
+        if(start > end)
+        {
+            return res.status(400).json({
+                success: false,
+                message: "Start date cannot be after end date.",
+            });
+        }
 
         // Find the policy
         const policy = await Policy.findById(id);
@@ -320,7 +317,9 @@ exports.myPolicies = async (req, res) => {
 exports.buyClaim = async (req, res) => {
     try {
         const userId = req.user.id; 
-        const { policyId } = req.body;
+        const { policyId,claimReason } = req.body;
+
+        console.log(claimReason);
 
         // Check if policy exists
         const policy = await Policy.findById(policyId);
@@ -345,6 +344,7 @@ exports.buyClaim = async (req, res) => {
             claimholderId: userId,
             policyId: policyId,
             claimAmount: policy.coverageAmount,
+            claimReason,
         });
         
         user.claims.push(newClaim._id);

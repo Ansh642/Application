@@ -16,6 +16,10 @@ const ClaimSchema = new mongoose.Schema({
         type: Number, 
         required: true 
     },
+    claimReason:{
+        type: String,
+        required: true
+    },
     claimDate: { 
         type: Date, 
         required: true, 

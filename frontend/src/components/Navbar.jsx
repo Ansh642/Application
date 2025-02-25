@@ -59,7 +59,7 @@ export default function Navbar() {
               <li className="max-lg:border-b border-gray-300 max-lg:py-3 px-3">
                 <div
                   onClick={() => navigate('/')}
-                  className="hover:text-[#007bff] cursor-pointer text-[#007bff] block  text-lg"
+                  className="hover:text-[#007bff] cursor-pointer  text-gray-500 block  text-lg"
                 >
                   Home
                 </div>

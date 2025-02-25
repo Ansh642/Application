@@ -15,6 +15,8 @@ export default function Login() {
     password: '',
   });
 
+  const [loading, setLoading] = useState(false); // Loading state
+
   const { email, password } = formData;
 
   const handleOnChange = (e) => {
@@ -26,6 +28,8 @@ export default function Login() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true); // Show spinner
+
     try {
       const response = await axios.post('http://localhost:5000/api/login', {
         email,
@@ -45,12 +49,39 @@ export default function Login() {
       }
     } catch (err) {
       toast.error(err.message);
+      setLoading(false); // Hide spinner on failure
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col justify-between bg-gray-50">
       <Navbar />
+
+      {/* Spinner at the Top */}
+      {loading && (
+        <div className="fixed top-0 left-0 w-full flex justify-center items-center bg-gray-100 py-3">
+          <svg
+            className="animate-spin h-6 w-6 text-blue-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+        </div>
+      )}
 
       <div className="flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
@@ -119,7 +150,12 @@ export default function Login() {
             <div>
               <button
                 type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white ${
+                  loading
+                    ? 'bg-blue-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700'
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300`}
               >
                 Sign In
               </button>
