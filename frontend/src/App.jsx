@@ -1,5 +1,5 @@
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
@@ -17,6 +17,7 @@ import NotFound from './pages/NotFound';
 import CreatePolicy from './pages/Admin/CreatePolicy';
 import Dashboard from './pages/Admin/Dashboard';
 import ForgotPass from './pages/ForgotPass';
+import AIPromptPage from './pages/AI';
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
        <Route path='/forgot-password' element={<ForgotPass/>}/>  
        <Route path='/policies' element={<Policies/>}/>   
        <Route path='/policies/:id' element={<PolicyPage/>}/>
+       <Route path='/ask-ai' element={<AIPromptPage/>}/>
        <Route path='*' element={<NotFound/>} />
 
        <Route path="/" element={<Private/>}> 

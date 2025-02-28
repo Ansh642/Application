@@ -96,6 +96,15 @@ export default function Navbar() {
                 </a>
               </li>
 
+              <li
+                onClick={() => navigate('/ask-ai')}
+                className="relative max-lg:border-b border-gray-300 max-lg:py-3 px-3">
+                <a className="hover:text-[#007bff] text-gray-500 block text-lg cursor-pointer relative">
+                  Ask AI
+                  <span className="absolute -top-2 -right-5 text-[15px] text-yellow-400">⭐</span>
+                </a>
+              </li>
+
             </ul>
           </div>
 

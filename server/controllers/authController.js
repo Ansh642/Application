@@ -241,15 +241,13 @@ exports.buyPolicy = async (req, res) => {
             </p>
             <p style="font-size: 16px; color: #555;">
             <strong>Policy Name:</strong> ${policy.policyName}<br>
-            <strong>Coverage Amount:</strong> Rs. ${policy.coverageAmount.toLocaleString()}/-<br>
-            <strong>Start Date:</strong> ${new Date(policy.startDate).toLocaleDateString()}<br>
-            <strong>End Date:</strong> ${new Date(policy.endDate).toLocaleDateString()}<br>
-            <strong>Your Details:</strong><br>
+            <strong>Coverage Amount:</strong> Rs. ${policy.coverageAmount.toLocaleString()}/-<br> <br>
+            <strong>Your Details: </strong><br>
             <strong>Age:</strong> ${age}<br>
             <strong>Gender:</strong> ${gender}<br>
             <strong>Medical History:</strong> ${medicalHistory}<br>
-            <strong>Start Date of Policy:</strong> ${new Date(startDate)}<br>
-            <strong>End Date of Policy:</strong> ${new Date(endDate)}
+            <strong>Start Date of Policy:</strong> ${startDate}<br>
+            <strong>End Date of Policy:</strong> ${endDate}
             </p>
             <p style="font-size: 16px; color: #555;">
             Thank you for choosing us for your insurance needs. We are here to provide you with the best service.

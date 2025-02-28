@@ -5,6 +5,7 @@ const policyController = require('../controllers/policyController');
 const claimController = require('../controllers/claimController');
 const authController = require('../controllers/authController');
 const { auth, isAdmin } = require('../middleware/middleware');
+const run = require('../geminiApi');
 const policyCache = new NodeCache({ stdTTL: 3600, checkperiod: 600 }); 
 
 
@@ -259,7 +260,25 @@ router.get("/get-users", auth, isAdmin, claimController.getAllUsers);
 
 
 
+// ai routes
+router.post('/ask-ai', async(req, res) => {
+  try{
+    const {prompt} = req.body;
+    const response = await run(prompt);
 
+    return res.status(200).json({
+      data : response
+    });
+
+  }
+  catch(err){
+    return res.status(500).json({
+      success: false,
+      error: err.message
+    })
+  }
+
+});
 
 module.exports = router;
 

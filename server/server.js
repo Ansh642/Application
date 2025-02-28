@@ -9,6 +9,8 @@ const promClient = require("prom-client"); // Import prom-client
 require("dotenv").config();
 const path = require('path');
 
+require('./geminiApi');
+
 // Create Express app
 const app = express();
 
@@ -134,8 +136,6 @@ const PORT = process.env.PORT || 5000;
 if (require.main === module) {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log("Swagger at http://localhost:5000/api-docs");
-    console.log("Monitoring tool at http://localhost:5000/metrics");
   });
 }
 
